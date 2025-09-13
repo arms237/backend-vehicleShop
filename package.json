@@ -23,6 +23,7 @@
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-express": "^11.1.6",
+    "@prisma/client": "^6.16.1",
     "i18next": "^25.5.2",
     "i18next-fs-backend": "^2.6.0",
     "i18next-http-middleware": "^3.8.0",

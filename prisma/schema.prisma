@@ -1,0 +1,162 @@
+// =======================
+//  SCHEMA PRISMA
+// =======================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql" 
+  url      = env("DATABASE_URL")
+}
+
+// === ROLES ===
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+// === USERS ===
+model User {
+  id          String    @id @default(uuid())
+  firstName   String
+  lastName    String
+  phone       String?
+  email       String    @unique
+  password    String
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  roleId   Int
+  role     Role   @relation(fields: [roleId], references: [id])
+  vehicles Vehicle[] @relation("AdminVehicles")
+  transactions Transaction[]
+  favorites Favorite[]
+}
+
+// === CATEGORIES ===
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+
+  vehicles    Vehicle[]
+}
+
+// === BRANDS ===
+model Brand {
+  id        String   @id @default(uuid())
+  name      String
+  vehicles  Vehicle[]
+}
+
+// === SUPPLIERS ===
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  phone     String?
+  email     String?
+
+  vehicles  Vehicle[]
+}
+
+// === VEHICLES ===
+model Vehicle {
+  id           String   @id @default(uuid())
+  reference    String
+  model        String
+  bodyType     String?
+  range        String?
+  condition    String
+  status       String   @default("available") // available, reserved, sold, rented
+  stock        Int      @default(1)
+  price        Decimal? @db.Decimal(10,2)
+  rentalPricePerDay Decimal? @db.Decimal(10,2)
+  firstRegistration DateTime?
+  countryOrigin String?
+  axleCount    Int?
+  axleBrand    String?
+  mileage      Int?
+  emissionNorm String?
+  gearbox      String?
+  enginePower  Int?
+  engineSize   Int?
+  dimensions   String?
+  fuelType     String?
+  tonnage      String?
+  tires        String?
+  cabinType    String?
+  cabinEquipments String?
+  specificEquipments String?
+
+  // Relations
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+
+  brandId      String
+  brand        Brand    @relation(fields: [brandId], references: [id])
+
+  adminId      String
+  admin        User     @relation("AdminVehicles", fields: [adminId], references: [id])
+
+  supplierId   String
+  supplier     Supplier @relation(fields: [supplierId], references: [id])
+
+  images VehicleImage[]
+  vehicleTransactions VehicleTransaction[]
+  favorites Favorite[]
+}
+
+// === VEHICLE IMAGES ===
+model VehicleImage {
+  id         String   @id @default(uuid())
+  url        String
+  isMain     Boolean  @default(false)
+
+  vehicleId  String
+  vehicle    Vehicle @relation(fields: [vehicleId], references: [id])
+}
+
+// === TRANSACTIONS / ORDERS ===
+model Transaction {
+  id           String   @id @default(uuid())
+  type         String   // sale or rental
+  createdAt    DateTime @default(now())
+  startDate    DateTime?
+  endDate      DateTime?
+  status       String   @default("pending") // pending, confirmed, canceled
+  whatsappLink String?
+
+  // Relations
+  userId   String
+  user     User @relation(fields: [userId], references: [id])
+  vehicleTransactions VehicleTransaction[]
+}
+
+// === VEHICLE TRANSACTIONS (cart / order items) ===
+model VehicleTransaction {
+  id             String   @id @default(uuid())
+  price          Decimal? @db.Decimal(10,2)
+  quantity       Int      @default(1)
+
+  vehicleId      String
+  vehicle        Vehicle @relation(fields: [vehicleId], references: [id])
+
+  transactionId  String
+  transaction    Transaction @relation(fields: [transactionId], references: [id])
+}
+
+// === FAVORITES (wishlist) ===
+model Favorite {
+  id         String   @id @default(uuid())
+  addedAt    DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+
+  vehicleId  String
+  vehicle    Vehicle @relation(fields: [vehicleId], references: [id])
+}

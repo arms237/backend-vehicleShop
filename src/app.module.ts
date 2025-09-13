@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {I18nModule, QueryResolver, HeaderResolver} from 'nestjs-i18n';
+import {I18nModule, QueryResolver, HeaderResolver, CookieResolver} from 'nestjs-i18n';
 import * as path from 'path';
 
 @Module({
   imports: [
     I18nModule.forRoot({
-      fallbackLanguage: 'en',
+      fallbackLanguage: 'en', // langue par défaut
       loaderOptions: {
-        path: path.join(__dirname, '/i18n/'),
-        watch: true,
+        // Utilise le dossier i18n à la racine du projet, que ce soit en dev (src) ou en prod (dist)
+        path: path.join(process.cwd(), 'src/i18n/'),
+        watch: true, // recharge automatiquement si tu modifies les fichiers
       },
       resolvers: [
-        { use: QueryResolver, options: ['lang'] }, // ?lang=fr
-        new HeaderResolver(['x-lang']), // Header: x-lang: jp
+        { use: QueryResolver, options: ['lang'] }, // permet de choisir ?lang=fr
+        new HeaderResolver(['x-custom-lang']), // permet de choisir via un header
+        new CookieResolver(['lang']), // permet de choisir via un cookie
       ],
     }),
   ],

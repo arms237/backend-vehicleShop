@@ -1,0 +1,16 @@
+{
+  "EMAIL_ALREADY_USED": "Email déjà utilisé",
+  "PHONE_ALREADY_USED": "Numéro de téléphone déjà utilisé",
+  "INVALID_ROLE": "Rôle invalide",
+  "SIGNUP_SUCCESS": "Inscription réussie. Vérifiez votre email pour activer le compte.",
+  "VERIFICATION_SUBJECT": "Vérifiez votre email",
+  "VERIFICATION_BODY": "Cliquez sur ce lien pour vérifier votre email : <a href=\"{url}\">{url}</a>",
+  "PASSWORD_TOO_WEAK": "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre",
+  "INVALID_TOKEN": "Token invalide ou expiré",
+  "VERIFICATION_SUCCESS": "Email vérifié avec succès",
+  "ROLE_CLIENT": "Client",
+  "ROLE_ADMIN": "Administrateur",
+  "ROLE_SELLER": "Vendeur",
+  "INVALID_CREDENTIALS": "Identifiants invalides",
+  "LOGIN_SUCCESS": "Connexion réussie"
+}

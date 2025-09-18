@@ -1,0 +1,16 @@
+{
+  "EMAIL_ALREADY_USED": "Email already in use",
+  "PHONE_ALREADY_USED": "Phone number already in use",
+  "INVALID_ROLE": "Invalid role",
+  "SIGNUP_SUCCESS": "Signup successful. Check your email to verify your account.",
+  "VERIFICATION_SUBJECT": "Verify your email",
+  "VERIFICATION_BODY": "Click this link to verify your email: <a href=\"{url}\">{url}</a>",
+  "PASSWORD_TOO_WEAK": "Password must contain at least one uppercase, one lowercase, and one number",
+  "INVALID_TOKEN": "Invalid or expired token",
+  "VERIFICATION_SUCCESS": "Email verified successfully",
+  "ROLE_CLIENT": "Client",
+  "ROLE_ADMIN": "Admin",
+  "ROLE_SELLER": "Seller",
+  "INVALID_CREDENTIALS": "Invalid credentials",
+  "LOGIN_SUCCESS": "Login successful"
+}

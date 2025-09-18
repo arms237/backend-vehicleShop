@@ -1,5 +1,5 @@
 // =======================
-//  SCHEMA PRISMA
+//  SCHEMA PRISMA AVEC I18N
 // =======================
 
 generator client {
@@ -7,156 +7,273 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" 
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+// === LANGUES SUPPORTÉES ===
+model Language {
+  id   String @id // 'fr', 'en', 'it'
+  name String // 'Français', 'English', 'Italiano'
+
+  categoryTranslations Category_Translation[]
+  brandTranslations    Brand_Translation[]
+  supplierTranslations Supplier_Translation[]
+  vehicleTranslations  Vehicle_Translation[]
 }
 
 // === ROLES ===
 model Role {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id    Int      @id @default(autoincrement())
+  name  RoleName @default(client)// client,admin, seller
   users User[]
+}
+
+// Pour les types de rôles
+enum RoleName {
+  client
+  admin
+  seller
 }
 
 // === USERS ===
 model User {
-  id          String    @id @default(uuid())
-  firstName   String
-  lastName    String
-  phone       String?
-  email       String    @unique
-  password    String
-  createdAt   DateTime  @default(now())
-
+  id                String   @id @default(uuid())
+  firstName         String
+  lastName          String
+  phone             String?  @unique
+  email             String   @unique
+  password          String
+  preferredLanguage String   @default("fr") // Langue préférée de l'utilisateur
+  createdAt         DateTime @default(now())
+  isVerified        Boolean  @default(false)
+  verificationToken String?
+  verificationExpiresAt DateTime? // Ajout pour expiration
+  resetPasswordToken String?   // Ajout pour réinitialisation
+  resetPasswordExpiresAt DateTime? // Ajout pour expiration
+  
   // Relations
-  roleId   Int
-  role     Role   @relation(fields: [roleId], references: [id])
-  vehicles Vehicle[] @relation("AdminVehicles")
+  roleId       Int
+  role         Role          @relation(fields: [roleId], references: [id])
+  vehicles     Vehicle[]     @relation("AdminVehicles")
   transactions Transaction[]
-  favorites Favorite[]
+  favorites    Favorite[]
+
+  @@index([email])
 }
 
 // === CATEGORIES ===
 model Category {
-  id          String    @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique // Identifiant technique invariant
+
+  vehicles     Vehicle[]
+  translations Category_Translation[]
+}
+
+model Category_Translation {
+  id          String  @id @default(uuid())
   name        String
   description String?
 
-  vehicles    Vehicle[]
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  @@unique([categoryId, languageId])
 }
 
 // === BRANDS ===
 model Brand {
-  id        String   @id @default(uuid())
-  name      String
-  vehicles  Vehicle[]
+  id   String @id @default(uuid())
+  slug String @unique // Identifiant technique invariant
+
+  vehicles     Vehicle[]
+  translations Brand_Translation[]
+}
+
+model Brand_Translation {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  brandId String
+  brand   Brand  @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  @@unique([brandId, languageId])
 }
 
 // === SUPPLIERS ===
 model Supplier {
-  id        String   @id @default(uuid())
-  name      String
-  address   String?
-  phone     String?
-  email     String?
+  id   String @id @default(uuid())
+  slug String @unique
 
-  vehicles  Vehicle[]
+  address String?
+  phone   String?
+  email   String?
+
+  vehicles     Vehicle[]
+  translations Supplier_Translation[]
+}
+
+model Supplier_Translation {
+  id   String @id @default(uuid())
+  name String
+
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  @@unique([supplierId, languageId])
 }
 
 // === VEHICLES ===
 model Vehicle {
-  id           String   @id @default(uuid())
-  reference    String
-  model        String
-  bodyType     String?
-  range        String?
-  condition    String
-  status       String   @default("available") // available, reserved, sold, rented
-  stock        Int      @default(1)
-  price        Decimal? @db.Decimal(10,2)
-  rentalPricePerDay Decimal? @db.Decimal(10,2)
-  firstRegistration DateTime?
-  countryOrigin String?
-  axleCount    Int?
-  axleBrand    String?
-  mileage      Int?
-  emissionNorm String?
-  gearbox      String?
-  enginePower  Int?
-  engineSize   Int?
-  dimensions   String?
-  fuelType     String?
-  tonnage      String?
-  tires        String?
-  cabinType    String?
-  cabinEquipments String?
+  id                 String        @id @default(uuid())
+  reference          String        @unique
+  model              String
+  bodyType           String?
+  range              String?
+  condition          String
+  status             VehicleStatus @default(available)
+  stock              Int           @default(1)
+  price              Decimal?      @db.Decimal(10, 2)
+  rentalPricePerDay  Decimal?      @db.Decimal(10, 2)
+  firstRegistration  DateTime?
+  countryOrigin      String?
+  axleCount          Int?
+  axleBrand          String?
+  mileage            Int?
+  emissionNorm       String?
+  gearbox            String?
+  enginePower        Int?
+  engineSize         Int?
+  dimensions         String?
+  fuelType           String?
+  tonnage            String?
+  tires              String?
+  cabinType          String?
+  cabinEquipments    String?
   specificEquipments String?
+  createdAt          DateTime      @default(now())
 
   // Relations
-  categoryId   String
-  category     Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 
-  brandId      String
-  brand        Brand    @relation(fields: [brandId], references: [id])
+  brandId String
+  brand   Brand  @relation(fields: [brandId], references: [id])
 
-  adminId      String
-  admin        User     @relation("AdminVehicles", fields: [adminId], references: [id])
+  adminId String
+  admin   User   @relation("AdminVehicles", fields: [adminId], references: [id])
 
-  supplierId   String
-  supplier     Supplier @relation(fields: [supplierId], references: [id])
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
 
-  images VehicleImage[]
+  images              VehicleImage[]
   vehicleTransactions VehicleTransaction[]
-  favorites Favorite[]
+  favorites           Favorite[]
+  translations        Vehicle_Translation[]
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([createdAt])
+}
+
+//Pour les status
+enum VehicleStatus {
+  available
+  sold
+  rented
+  maintenance
+}
+
+// === VEHICLE TRANSLATIONS ===
+model Vehicle_Translation {
+  id          String  @id @default(uuid())
+  title       String? // Titre du véhicule dans cette langue
+  description String? @db.Text // Description détaillée
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  @@unique([vehicleId, languageId])
 }
 
 // === VEHICLE IMAGES ===
 model VehicleImage {
-  id         String   @id @default(uuid())
-  url        String
-  isMain     Boolean  @default(false)
+  id     String  @id @default(uuid())
+  url    String
+  alt    String? // Texte alternatif pour l'accessibilité
+  isMain Boolean @default(false)
 
-  vehicleId  String
-  vehicle    Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 }
 
-// === TRANSACTIONS / ORDERS ===
+// === TRANSACTIONS ===
 model Transaction {
-  id           String   @id @default(uuid())
-  type         String   // sale or rental
-  createdAt    DateTime @default(now())
+  id           String    @id @default(uuid())
+  type         String // 'sale' or 'rental'
+  createdAt    DateTime  @default(now())
   startDate    DateTime?
   endDate      DateTime?
-  status       String   @default("pending") // pending, confirmed, canceled
+  status       StatusTransaction    @default(pending)
   whatsappLink String?
+  totalAmount  Decimal?  @db.Decimal(10, 2)
 
   // Relations
-  userId   String
-  user     User @relation(fields: [userId], references: [id])
+  userId              String
+  user                User                 @relation(fields: [userId], references: [id])
   vehicleTransactions VehicleTransaction[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+// Pour les status de transaction
+enum StatusTransaction {
+  pending
+  completed
+  cancelled 
 }
 
-// === VEHICLE TRANSACTIONS (cart / order items) ===
+// === VEHICLE TRANSACTIONS ===
 model VehicleTransaction {
-  id             String   @id @default(uuid())
-  price          Decimal? @db.Decimal(10,2)
-  quantity       Int      @default(1)
+  id       String   @id @default(uuid())
+  price    Decimal? @db.Decimal(10, 2)
+  quantity Int      @default(1)
 
-  vehicleId      String
-  vehicle        Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
 
-  transactionId  String
-  transaction    Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@unique([vehicleId, transactionId])
 }
 
-// === FAVORITES (wishlist) ===
+// === FAVORITES ===
 model Favorite {
-  id         String   @id @default(uuid())
-  addedAt    DateTime @default(now())
+  id      String   @id @default(uuid())
+  addedAt DateTime @default(now())
 
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  vehicleId  String
-  vehicle    Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vehicleId])
 }

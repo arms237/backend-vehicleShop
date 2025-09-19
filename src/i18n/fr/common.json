@@ -2,7 +2,7 @@
   "EMAIL_ALREADY_USED": "Email déjà utilisé",
   "PHONE_ALREADY_USED": "Numéro de téléphone déjà utilisé",
   "INVALID_ROLE": "Rôle invalide",
-  "SIGNUP_SUCCESS": "Inscription réussie. Vérifiez votre email pour activer le compte.",
+  "SIGNUP_SUCCESS": "Inscription réussie. Vérifiez votre email pour activer votre compte.",
   "VERIFICATION_SUBJECT": "Vérifiez votre email",
   "VERIFICATION_BODY": "Cliquez sur ce lien pour vérifier votre email : <a href=\"{url}\">{url}</a>",
   "PASSWORD_TOO_WEAK": "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre",
@@ -12,5 +12,15 @@
   "ROLE_ADMIN": "Administrateur",
   "ROLE_SELLER": "Vendeur",
   "INVALID_CREDENTIALS": "Identifiants invalides",
-  "LOGIN_SUCCESS": "Connexion réussie"
+  "LOGIN_SUCCESS": "Connexion réussie",
+  "USER_NOT_FOUND": "Utilisateur non trouvé",
+  "INVALID_USER_ID": "ID utilisateur invalide",
+  "FORGOT_PASSWORD_SUBJECT": "Réinitialisez votre mot de passe",
+  "RESET_EMAIL_SENT": "Vérifiez votre mail pour réinitialiser votre mot de passe",
+  "RESET_PASSWORD_SUCCESS": "Mot de passe réinitialisé avec succès",
+  "PASSWORD_RESET_BODY": "Cliquez sur ce lien pour réinitialiser votre mot de passe : <a href=\"{url}\">{url}</a>",
+  "PROFILE_UPDATE_SUCCESS": "Profil mis à jour avec succès",
+  "UNAUTHORIZED": "Accès non autorisé",
+  "RESET_PASSWORD_EXPIRY": "Le lien de réinitialisation du mot de passe a expiré",
+  "VERIFY_BUTTON": "Vérifier"
 }

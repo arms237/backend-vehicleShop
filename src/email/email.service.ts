@@ -93,4 +93,26 @@ export class EmailService {
       throw new InternalServerErrorException('Email not sent');
     }
   }
+
+   async sendResetPasswordEmail(email: string, token: string, language: string) {
+    const url = `${this.configService.get('APP_URL')}/auth/reset-password?token=${token}`;
+    const subject = this.i18n.translate('common.FORGOT_PASSWORD_SUBJECT', { lang: language });
+    const body = this.i18n.translate('common.PASSWORD_RESET_BODY', { lang: language, args: { url } });
+
+    await this.transporter.sendMail({
+      to: email,
+      subject,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.5">
+            <h2>${subject}</h2>
+            <p>${body}</p>
+            <p>
+              <a href="${url}" 
+                 style="background:#4CAF50;color:#fff;padding:10px 15px;
+                        text-decoration:none;border-radius:5px;">
+                ${this.i18n.translate('common.VERIFY_BUTTON', { lang: language })}
+              </a>
+            </p>
+          </div>`,
+    });
+  }
 }

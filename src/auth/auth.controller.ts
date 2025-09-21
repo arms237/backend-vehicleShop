@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignupDto } from './dto/signup.dto';
 import { AuthService } from './auth.service';
@@ -14,15 +14,15 @@ export class AuthController {
     constructor(private readonly authService:AuthService){}
 
     @Post('signup')
-    @UsePipes(ValidationPipe)
+    @HttpCode(HttpStatus.CREATED)
     @ApiBody({type: SignupDto})
     @ApiResponse({ status: 201, description: 'Inscription réussie / Registrazione completata / Signup successful' })
     @ApiResponse({ status: 400, description: 'Données invalides / Dati non validi / Invalid data' })
-    async signup(@Body() signupDto: SignupDto, @I18n() i18n: I18nContext) {
-        return this.authService.signup(signupDto, i18n);
+    async signup(@Body() signupDto: SignupDto) {
+        return this.authService.signup(signupDto);
     }
 
-    @Post('verify')
+    @Get('verify-email')
     @ApiQuery({ name: 'token', type: String })
     @ApiResponse({ status: 200, description: 'Vérification réussie / Verifica completata / Verification successful' })
     @ApiResponse({ status: 400, description: 'Token invalide / Token non valido / Invalid token' })
@@ -31,7 +31,6 @@ export class AuthController {
     }
 
     @Post('login')
-    @UsePipes(ValidationPipe)
     @ApiBody({type: LoginDto})
     @ApiResponse({ status: 200, description: 'Connexion réussie / Accesso riuscito / Login successful' })
     @ApiResponse({ status: 400, description: 'Données invalides / Dati non validi / Invalid data' })
@@ -48,7 +47,6 @@ export class AuthController {
     }
 
     @Post('forgot-password')
-    @UsePipes(ValidationPipe)
     @ApiBody({ type: ForgotPasswordDto })
     @ApiResponse({ status: 200, description: 'Demande de réinitialisation envoyée / Richiesta di reimpostazione inviata / Reset request sent' })
     @ApiResponse({ status: 400, description: 'Email non trouvé / Email non trovato / Email not found' })
@@ -57,7 +55,6 @@ export class AuthController {
     }
 
     @Post('reset-password')
-    @UsePipes(ValidationPipe)
     @ApiBody({ type: ResetPasswordDto })
     @ApiResponse({ status: 200, description: 'Mot de passe réinitialisé / Password reimpostata / Password reset successful' })
     @ApiResponse({ status: 400, description: 'Token invalide / Token non valido / Invalid token' })

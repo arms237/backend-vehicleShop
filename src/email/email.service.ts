@@ -23,8 +23,6 @@ export class EmailService {
       service: 'gmail',
       port: 465,
       secure: true,
-      logger:true,
-      debug: true,
       auth: {
         user: this.configService.get('EMAIL_USER'),
         pass: this.configService.get('EMAIL_PASS'),
@@ -56,8 +54,8 @@ export class EmailService {
   async sendVerificationEmail(email: string, token: string, language: string) {
     try {
       const url = `${this.configService.get(
-        'APP_URL',
-      )}/auth/verify?token=${token}`;
+        'FRONTEND_URL',
+      )}/${language}/auth/verify-email?token=${token}`;
 
       const subject = this.i18n.translate('common.VERIFICATION_SUBJECT', {
         lang: language,
@@ -95,7 +93,7 @@ export class EmailService {
   }
 
    async sendResetPasswordEmail(email: string, token: string, language: string) {
-    const url = `${this.configService.get('APP_URL')}/auth/reset-password?token=${token}`;
+    const url = `${this.configService.get('FRONTEND_URL')}/${language}/auth/reset-password?token=${token}`;
     const subject = this.i18n.translate('common.FORGOT_PASSWORD_SUBJECT', { lang: language });
     const body = this.i18n.translate('common.PASSWORD_RESET_BODY', { lang: language, args: { url } });
 

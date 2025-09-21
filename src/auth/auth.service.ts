@@ -23,20 +23,36 @@ export class AuthService {
   ) {}
 
   //Inscription
-  async signup(signupDto: SignupDto, i18nContext: I18nContext) {
-    const { email, firstName, lastName, phone, password } = signupDto;
-    const lang = signupDto.preferredLanguage || i18nContext.lang || 'fr';
-
+  async signup(signupDto: SignupDto) {
+    const { email, firstName, lastName, phone, password, preferredLanguage } =
+      signupDto;
+    const lang = preferredLanguage || 'it';
+     //Générer les token
+    const verificationToken = uuidv4();
     //Vérifier si l'email existe
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
     if (existingUser) {
+      if(!existingUser.isVerified){
+        // Resend verification email
+        await this.prisma.user.update(
+          { where: { email }, data: { verificationToken } })
+        await this.emailService.sendVerificationEmail(
+          existingUser.email,
+          verificationToken,
+          lang,
+        );
+        throw new BadRequestException(
+          this.i18n.translate('common.EMAIL_NOT_VERIFIED_RESEND', { lang }),
+        );
+      }
+      console.log(preferredLanguage)
       throw new BadRequestException(
-        this.i18n.translate('common.EMAIL_ALREADY_USED', { lang }),
+        this.i18n.translate('common.EMAIL_ALREADY_USED', { lang: 'it' }),
       );
     }
-
+    
     //Vérifier le numero de téléphone
     const existingPhone = await this.prisma.user.findUnique({
       where: { phone },
@@ -46,13 +62,9 @@ export class AuthService {
         this.i18n.translate('common.PHONE_ALREADY_USED', { lang }),
       );
     }
-
+   
     //Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    //Générer les token
-    const verificationToken = uuidv4();
-    const hashed_verificationToken = await bcrypt.hash(verificationToken, 10);
 
     //Vérifier/Créer le role
     let clientRole = await this.prisma.role.findFirst({
@@ -109,7 +121,7 @@ export class AuthService {
 
   //Vérification de l'email
   async verifyEmail(token: string, i18nContext: I18nContext) {
-    const lang = i18nContext.lang || 'fr';
+    const lang = i18nContext.lang || 'it';
     const user = await this.prisma.user.findFirst({
       where: { verificationToken: token },
       include: { role: true },

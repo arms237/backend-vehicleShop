@@ -1,5 +1,6 @@
 {
   "EMAIL_ALREADY_USED": "Email already in use",
+  "EMAIL_NOT_VERIFIED_RESEND": "Verification email resent. Please check your inbox.",
   "PHONE_ALREADY_USED": "Phone number already in use",
   "INVALID_ROLE": "Invalid role",
   "SIGNUP_SUCCESS": "Registration successful. Check your email to activate your account.",

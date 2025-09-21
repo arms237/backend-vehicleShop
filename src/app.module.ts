@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {I18nModule, QueryResolver, HeaderResolver, CookieResolver} from 'nestjs-i18n';
+import {I18nModule, QueryResolver, HeaderResolver, CookieResolver, I18nService} from 'nestjs-i18n';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -16,14 +16,14 @@ import { EmailModule } from './email/email.module';
     I18nModule.forRoot({
       fallbackLanguage: 'fr', // langue par défaut
       loaderOptions: {
-        // Utilise le dossier i18n à la racine du projet, que ce soit en dev (src) ou en prod (dist)
-        path: path.join(process.cwd(), '/src/i18n/'),
+        // Ce chemin pointe vers 'src/i18n' en dev et 'dist/i18n' en prod
+        path: path.join(__dirname, '/i18n/'),
         watch: true, // recharge automatiquement si tu modifies les fichiers
       },
       resolvers: [
-        { use: QueryResolver, options: ['lang'] }, // permet de choisir ?lang=fr
-        new HeaderResolver(['x-custom-lang']), // permet de choisir via un header
-        new CookieResolver(['lang']), // permet de choisir via un cookie
+        { use: QueryResolver, options: ['lang'] }, // Priorité 1
+        new HeaderResolver(['x-custom-lang']), // Priorité 2 (c'est ce que nous allons utiliser)
+        new CookieResolver(['lang']), // Priorité 3
       ],
     }),
     AuthModule,
@@ -33,4 +33,21 @@ import { EmailModule } from './email/email.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly i18n: I18nService) {}
+
+  onModuleInit() {
+    console.log('--- [I18n Debug] Langues chargées au démarrage ---');
+    // @ts-ignore - Accès à une propriété interne pour le debug
+    const loadedLanguages = Object.keys(this.i18n.translations);
+    console.log('Langues détectées dans les fichiers:', loadedLanguages);
+    console.log('Langue de secours configurée:', this.i18n.getSupportedLanguages());
+    console.log('-------------------------------------------------');
+
+    if (!loadedLanguages.includes('it')) {
+      console.error(
+        "--- [I18n Debug] ERREUR: Le fichier de langue 'it' n'a pas été chargé. Vérifiez le chemin et le contenu du fichier 'i18n/it.json'.",
+      );
+    }
+  }
+}

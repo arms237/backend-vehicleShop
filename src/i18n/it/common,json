@@ -1,5 +1,6 @@
 {
   "EMAIL_ALREADY_USED": "Email già in uso",
+  "EMAIL_NOT_VERIFIED_RESEND": "Email di verifica rinviata. Controlla la tua casella di posta.",
   "PHONE_ALREADY_USED": "Numero di telefono già in uso",
   "INVALID_ROLE": "Ruolo non valido",
   "SIGNUP_SUCCESS": "Registrazione completata. Controlla la tua email per attivare l'account.",

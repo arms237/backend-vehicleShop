@@ -2,20 +2,20 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 class UpdateTranslationCategoryDto {
     @ApiPropertyOptional({
-        description: 'Nom de la catégorie dans la langue spécifiée',
-        example: 'Véhicules électriques'
+        description: 'Category name in the specified language',
+        example: 'Electric Vehicles'
     })
     name?: string;
 
     @ApiPropertyOptional({
-        description: 'Description de la catégorie dans la langue spécifiée',
-        example: 'Catégorie regroupant tous les véhicules électriques'
+        description: 'Category description in the specified language',
+        example: 'Category for all electric and hybrid vehicles'
     })
     description?: string;
 
     @ApiPropertyOptional({
-        description: 'Code de langue pour cette traduction',
-        example: 'fr',
+        description: 'Language code for this translation',
+        example: 'en',
         enum: ['fr', 'en', 'it']
     })
     language?: string;
@@ -23,19 +23,19 @@ class UpdateTranslationCategoryDto {
 
 export class UpdateCategoryDto {
     @ApiPropertyOptional({
-        description: 'Slug unique de la catégorie',
-        example: 'vehicules-electriques'
+        description: 'Unique category slug',
+        example: 'electric-vehicles'
     })
     slug?: string;
 
     @ApiPropertyOptional({
-        description: 'Traductions de la catégorie dans différentes langues',
+        description: 'Category translations in different languages',
         type: [UpdateTranslationCategoryDto]
     })
     translations?: UpdateTranslationCategoryDto[];
 
     @ApiPropertyOptional({
-        description: 'URL de l\'image de la catégorie',
+        description: 'Category image URL',
         example: 'https://example.com/images/electric-vehicles.jpg'
     })
     image?: string;

@@ -9,6 +9,7 @@ import { EmailService } from './email/email.service';
 import * as path from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { EmailModule } from './email/email.module';
     AuthModule,
     PrismaModule,
     EmailModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

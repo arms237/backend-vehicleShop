@@ -23,5 +23,15 @@
   "PROFILE_UPDATE_SUCCESS": "Profile updated successfully",
   "UNAUTHORIZED": "Unauthorized access",
   "RESET_PASSWORD_EXPIRY": "Password reset link has expired",
-  "VERIFY_BUTTON": "Verify"
+  "VERIFY_BUTTON": "Verify",
+  "CATEGORY": {
+    "NOT_FOUND": "Category not found",
+    "SLUG_ALREADY_EXISTS": "The slug '{slug}' already exists",
+    "CREATE_SUCCESS": "Category created successfully",
+    "UPDATE_SUCCESS": "Category updated successfully",
+    "DELETE_SUCCESS": "Category deleted successfully",
+    "LIST_SUCCESS": "Categories list retrieved successfully",
+    "DETAIL_SUCCESS": "Category details retrieved successfully",
+    "INVALID_ID": "Invalid category ID"
+  }
 }

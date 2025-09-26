@@ -1,9 +1,9 @@
 {
-  "EMAIL_ALREADY_USED": "Email già in uso",
-  "EMAIL_NOT_VERIFIED_RESEND": "Email di verifica rinviata. Controlla la tua casella di posta.",
-  "PHONE_ALREADY_USED": "Numero di telefono già in uso",
+  "EMAIL_ALREADY_USED": "Email già utilizzata",
+  "EMAIL_NOT_VERIFIED_RESEND": "Email di verifica reinviata. Controlla la tua casella di posta.",
+  "PHONE_ALREADY_USED": "Numero di telefono già utilizzato",
   "INVALID_ROLE": "Ruolo non valido",
-  "SIGNUP_SUCCESS": "Registrazione completata. Controlla la tua email per attivare l'account.",
+  "SIGNUP_SUCCESS": "Registrazione completata. Controlla la tua email per attivare il tuo account.",
   "VERIFICATION_SUBJECT": "Verifica la tua email",
   "VERIFICATION_BODY": "Clicca su questo link per verificare la tua email: <a href=\"{url}\">{url}</a>",
   "PASSWORD_TOO_WEAK": "La password deve contenere almeno una lettera maiuscola, una minuscola e un numero",
@@ -13,7 +13,7 @@
   "ROLE_ADMIN": "Amministratore",
   "ROLE_SELLER": "Venditore",
   "INVALID_CREDENTIALS": "Credenziali non valide",
-  "LOGIN_SUCCESS": "Accesso effettuato con successo",
+  "LOGIN_SUCCESS": "Accesso eseguito con successo",
   "USER_NOT_FOUND": "Utente non trovato",
   "INVALID_USER_ID": "ID utente non valido",
   "FORGOT_PASSWORD_SUBJECT": "Reimposta la tua password",
@@ -22,6 +22,16 @@
   "PASSWORD_RESET_BODY": "Clicca su questo link per reimpostare la tua password: <a href=\"{url}\">{url}</a>",
   "PROFILE_UPDATE_SUCCESS": "Profilo aggiornato con successo",
   "UNAUTHORIZED": "Accesso non autorizzato",
-  "RESET_PASSWORD_EXPIRY": "Il link per reimpostare la password è scaduto",
-  "VERIFY_BUTTON": "Verifica"
+  "RESET_PASSWORD_EXPIRY": "Il link per il reset della password è scaduto",
+  "VERIFY_BUTTON": "Verifica",
+  "CATEGORY": {
+    "NOT_FOUND": "Categoria non trovata",
+    "SLUG_ALREADY_EXISTS": "Lo slug '{slug}' esiste già",
+    "CREATE_SUCCESS": "Categoria creata con successo",
+    "UPDATE_SUCCESS": "Categoria aggiornata con successo",
+    "DELETE_SUCCESS": "Categoria eliminata con successo",
+    "LIST_SUCCESS": "Elenco categorie recuperato con successo",
+    "DETAIL_SUCCESS": "Dettagli categoria recuperati con successo",
+    "INVALID_ID": "ID categoria non valido"
+  }
 }

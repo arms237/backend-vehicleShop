@@ -23,5 +23,15 @@
   "PROFILE_UPDATE_SUCCESS": "Profil mis à jour avec succès",
   "UNAUTHORIZED": "Accès non autorisé",
   "RESET_PASSWORD_EXPIRY": "Le lien de réinitialisation du mot de passe a expiré",
-  "VERIFY_BUTTON": "Vérifier"
+  "VERIFY_BUTTON": "Vérifier",
+  "CATEGORY":{
+    "NOT_FOUND": "Catégorie non trouvée",
+    "SLUG_ALREADY_EXISTS": "Le slug '{slug}' existe déjà",
+    "CREATE_SUCCESS": "Catégorie créée avec succès",
+    "UPDATE_SUCCESS": "Catégorie mise à jour avec succès",
+    "DELETE_SUCCESS": "Catégorie supprimée avec succès",
+    "LIST_SUCCESS": "Liste des catégories récupérée avec succès",
+    "DETAIL_SUCCESS": "Détails de la catégorie récupérés avec succès",
+    "INVALID_ID": "ID de catégorie invalide"
+  }
 }

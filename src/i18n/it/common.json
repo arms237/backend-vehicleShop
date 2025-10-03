@@ -33,5 +33,32 @@
     "LIST_SUCCESS": "Elenco categorie recuperato con successo",
     "DETAIL_SUCCESS": "Dettagli categoria recuperati con successo",
     "INVALID_ID": "ID categoria non valido"
+  },
+  "BRAND": {
+    "NOT_FOUND": "Marca non trovata",
+    "SLUG_ALREADY_EXISTS": "Lo slug '{slug}' esiste già",
+    "CREATE_SUCCESS": "Marca creata con successo",
+    "UPDATE_SUCCESS": "Marca aggiornata con successo",
+    "DELETE_SUCCESS": "Marca eliminata con successo",
+    "LIST_SUCCESS": "Elenco marche recuperato con successo",
+    "DETAIL_SUCCESS": "Dettagli marca recuperati con successo",
+    "INVALID_ID": "ID marca non valido"
+  },
+  "VEHICLE": {
+    "NOT_FOUND": "Veicolo non trovato",
+    "CREATE_SUCCESS": "Veicolo creato con successo",
+    "UPDATE_SUCCESS": "Veicolo aggiornato con successo",
+    "DELETE_SUCCESS": "Veicolo eliminato con successo",
+    "LIST_SUCCESS": "Elenco veicoli recuperato con successo",
+    "DETAIL_SUCCESS": "Dettagli veicolo recuperati con successo",
+    "INVALID_ID": "ID veicolo non valido",
+    "CREATION_FAILED": "Creazione del veicolo fallita",
+    "UPDATE_FAILED": "Aggiornamento del veicolo fallito",
+    "DELETE_FAILED": "Eliminazione del veicolo fallita"
+  },
+  "errors": {
+    "BRAND_ALREADY_EXISTS": "Una marca con slug '{slug}' esiste già",
+    "BRAND_NOT_FOUND": "Marca con ID '{id}' non trovata",
+    "SLUG_ALREADY_EXISTS": "Lo slug '{slug}' esiste già"
   }
 }

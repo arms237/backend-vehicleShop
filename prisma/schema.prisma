@@ -90,7 +90,7 @@ model Category_Translation {
 model Brand {
   id   String @id @default(uuid())
   slug String @unique // Identifiant technique invariant
-
+  image String?
   vehicles     Vehicle[]
   translations Brand_Translation[]
 }
@@ -138,7 +138,6 @@ model Supplier_Translation {
 // === VEHICLES ===
 model Vehicle {
   id                 String        @id @default(uuid())
-  reference          String        @unique
   model              String
   bodyType           String?
   range              String?
@@ -175,8 +174,8 @@ model Vehicle {
   adminId String
   admin   User   @relation("AdminVehicles", fields: [adminId], references: [id])
 
-  supplierId String
-  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
 
   images              VehicleImage[]
   vehicleTransactions VehicleTransaction[]

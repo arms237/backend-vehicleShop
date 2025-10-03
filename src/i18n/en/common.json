@@ -33,5 +33,32 @@
     "LIST_SUCCESS": "Categories list retrieved successfully",
     "DETAIL_SUCCESS": "Category details retrieved successfully",
     "INVALID_ID": "Invalid category ID"
+  },
+  "BRAND": {
+    "NOT_FOUND": "Brand not found",
+    "SLUG_ALREADY_EXISTS": "The slug '{slug}' already exists",
+    "CREATE_SUCCESS": "Brand created successfully",
+    "UPDATE_SUCCESS": "Brand updated successfully",
+    "DELETE_SUCCESS": "Brand deleted successfully",
+    "LIST_SUCCESS": "Brands list retrieved successfully",
+    "DETAIL_SUCCESS": "Brand details retrieved successfully",
+    "INVALID_ID": "Invalid brand ID"
+  },
+  "VEHICLE": {
+    "NOT_FOUND": "Vehicle not found",
+    "CREATE_SUCCESS": "Vehicle created successfully",
+    "UPDATE_SUCCESS": "Vehicle updated successfully",
+    "DELETE_SUCCESS": "Vehicle deleted successfully",
+    "LIST_SUCCESS": "Vehicles list retrieved successfully",
+    "DETAIL_SUCCESS": "Vehicle details retrieved successfully",
+    "INVALID_ID": "Invalid vehicle ID",
+    "CREATION_FAILED": "Vehicle creation failed",
+    "UPDATE_FAILED": "Vehicle update failed",
+    "DELETE_FAILED": "Vehicle deletion failed"
+  },
+  "errors": {
+    "BRAND_ALREADY_EXISTS": "A brand with slug '{slug}' already exists",
+    "BRAND_NOT_FOUND": "Brand with ID '{id}' not found",
+    "SLUG_ALREADY_EXISTS": "The slug '{slug}' already exists"
   }
 }

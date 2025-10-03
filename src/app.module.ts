@@ -10,6 +10,8 @@ import * as path from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { CategoryModule } from './category/category.module';
+import { BrandModule } from './brand/brand.module';
+import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { CategoryModule } from './category/category.module';
     PrismaModule,
     EmailModule,
     CategoryModule,
+    BrandModule,
+    VehicleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

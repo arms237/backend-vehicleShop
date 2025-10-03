@@ -41,7 +41,7 @@ export class CategoryService {
 
     if (existingCategory) {
       throw new ConflictException(
-        this.i18n.t('errors.SLUG_ALREADY_EXISTS', {
+        this.i18n.translate('common.CATEGORY.SLUG_ALREADY_EXISTS', {
           lang: i18nContext.lang,
           args: { slug },
         }),
@@ -59,7 +59,7 @@ export class CategoryService {
 
     // Créer la catégorie avec ses traductions
     return {
-      message: this.i18n.t('CATEGORY.CREATED_SUCCESS', {
+      message: this.i18n.translate('common.CATEGORY.CREATE_SUCCESS', {
         lang: i18nContext.lang,
       }),
       category: await this.prisma.category.create({
@@ -81,7 +81,7 @@ export class CategoryService {
     const { translations, slug, image } = categoryDto;
     if (!id) {
       throw new NotFoundException(
-        this.i18n.t('CATEGORY.INVALID_ID', { lang: i18nContext.lang }),
+        this.i18n.translate('common.CATEGORY.INVALID_ID', { lang: i18nContext.lang }),
       );
     }
     // Vérifier si la catégorie existe
@@ -91,7 +91,7 @@ export class CategoryService {
     });
     if (!existingCategory) {
       throw new NotFoundException(
-        this.i18n.t('CATEGORY.NOT_FOUND', { lang: i18nContext.lang }),
+        this.i18n.translate('common.CATEGORY.NOT_FOUND', { lang: i18nContext.lang }),
       );
     }
 
@@ -103,7 +103,7 @@ export class CategoryService {
       });
       if (existingSlugCategory) {
         throw new ConflictException(
-          this.i18n.t('CATEGORY.SLUG_ALREADY_EXISTS', {
+          this.i18n.translate('common.CATEGORY.SLUG_ALREADY_EXISTS', {
             lang: i18nContext.lang,
             args: { slug },
           }),
@@ -130,7 +130,7 @@ export class CategoryService {
     }
     // Mettre à jour la catégorie avec ses nouvelles traductions
     return {
-      message: this.i18n.t('CATEGORY.UPDATE_SUCCESS', {
+      message: this.i18n.translate('common.CATEGORY.UPDATE_SUCCESS', {
         lang: i18nContext.lang,
       }),
       category: await this.prisma.category.update({
@@ -148,7 +148,7 @@ export class CategoryService {
     });
     if (!existingCategory) {
       throw new NotFoundException(
-        this.i18n.t('CATEGORY.NOT_FOUND', { lang: i18nContext.lang }),
+        this.i18n.translate('common.CATEGORY.NOT_FOUND', { lang: i18nContext.lang }),
       );
     }
     // Supprimer la catégorie
@@ -156,7 +156,7 @@ export class CategoryService {
       where: { id },
     });
     return {
-      message: this.i18n.t('CATEGORY.DELETE_SUCCESS', {
+      message: this.i18n.translate('common.CATEGORY.DELETE_SUCCESS', {
         lang: i18nContext.lang,
       }),
     };

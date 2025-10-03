@@ -24,7 +24,7 @@
   "UNAUTHORIZED": "Accès non autorisé",
   "RESET_PASSWORD_EXPIRY": "Le lien de réinitialisation du mot de passe a expiré",
   "VERIFY_BUTTON": "Vérifier",
-  "CATEGORY":{
+  "CATEGORY": {
     "NOT_FOUND": "Catégorie non trouvée",
     "SLUG_ALREADY_EXISTS": "Le slug '{slug}' existe déjà",
     "CREATE_SUCCESS": "Catégorie créée avec succès",
@@ -33,5 +33,32 @@
     "LIST_SUCCESS": "Liste des catégories récupérée avec succès",
     "DETAIL_SUCCESS": "Détails de la catégorie récupérés avec succès",
     "INVALID_ID": "ID de catégorie invalide"
+  },
+  "BRAND": {
+    "NOT_FOUND": "Marque non trouvée",
+    "SLUG_ALREADY_EXISTS": "Le slug '{slug}' existe déjà",
+    "CREATE_SUCCESS": "Marque créée avec succès",
+    "UPDATE_SUCCESS": "Marque mise à jour avec succès",
+    "DELETE_SUCCESS": "Marque supprimée avec succès",
+    "LIST_SUCCESS": "Liste des marques récupérée avec succès",
+    "DETAIL_SUCCESS": "Détails de la marque récupérés avec succès",
+    "INVALID_ID": "ID de marque invalide"
+  },
+  "VEHICLE": {
+    "NOT_FOUND": "Véhicule non trouvé",
+    "CREATE_SUCCESS": "Véhicule créé avec succès",
+    "UPDATE_SUCCESS": "Véhicule mis à jour avec succès",
+    "DELETE_SUCCESS": "Véhicule supprimé avec succès",
+    "LIST_SUCCESS": "Liste des véhicules récupérée avec succès",
+    "DETAIL_SUCCESS": "Détails du véhicule récupérés avec succès",
+    "INVALID_ID": "ID de véhicule invalide",
+    "CREATION_FAILED": "Échec de la création du véhicule",
+    "UPDATE_FAILED": "Échec de la mise à jour du véhicule",
+    "DELETE_FAILED": "Échec de la suppression du véhicule"
+  },
+  "errors": {
+    "BRAND_ALREADY_EXISTS": "Une marque avec le slug '{slug}' existe déjà",
+    "BRAND_NOT_FOUND": "Marque avec l'ID '{id}' non trouvée",
+    "SLUG_ALREADY_EXISTS": "Le slug '{slug}' existe déjà"
   }
 }

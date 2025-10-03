@@ -1,42 +1,63 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-class UpdateTranslationCategoryDto {
-    @ApiPropertyOptional({
-        description: 'Category name in the specified language',
-        example: 'Electric Vehicles'
+export class UpdateCategoryTranslationsDto {
+    @ApiProperty({
+        description: 'Nom de la catégorie dans la langue spécifiée',
+        example: 'Voitures de luxe',
+        required: false
     })
+    @IsString()
+    @IsOptional()
     name?: string;
 
-    @ApiPropertyOptional({
-        description: 'Category description in the specified language',
-        example: 'Category for all electric and hybrid vehicles'
+    @ApiProperty({
+        description: 'Description de la catégorie dans la langue spécifiée',
+        example: 'Véhicules haut de gamme avec des finitions premium',
+        required: false
     })
+    @IsString()
+    @IsOptional()
     description?: string;
 
-    @ApiPropertyOptional({
-        description: 'Language code for this translation',
-        example: 'en',
-        enum: ['fr', 'en', 'it']
+    @ApiProperty({
+        description: 'Code de la langue (ISO 639-1)',
+        example: 'fr',
+        required: false
     })
+    @IsString()
+    @IsOptional()
     language?: string;
 }
 
 export class UpdateCategoryDto {
-    @ApiPropertyOptional({
-        description: 'Unique category slug',
-        example: 'electric-vehicles'
+    @ApiProperty({
+        description: 'Slug unique de la catégorie (utilisé dans les URLs)',
+        example: 'voitures-luxe',
+        required: false
     })
+    @IsString()
+    @IsOptional()
     slug?: string;
 
-    @ApiPropertyOptional({
-        description: 'Category translations in different languages',
-        type: [UpdateTranslationCategoryDto]
+    @ApiProperty({
+        description: 'URL de l\'image de la catégorie',
+        example: 'https://example.com/images/luxury-cars.jpg',
+        required: false
     })
-    translations?: UpdateTranslationCategoryDto[];
-
-    @ApiPropertyOptional({
-        description: 'Category image URL',
-        example: 'https://example.com/images/electric-vehicles.jpg'
-    })
+    @IsString()
+    @IsOptional()
     image?: string;
+
+    @ApiProperty({
+        description: 'Traductions de la catégorie dans différentes langues',
+        type: [UpdateCategoryTranslationsDto],
+        required: false
+    })
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => UpdateCategoryTranslationsDto)
+    @IsOptional()
+    translations?: UpdateCategoryTranslationsDto[];
 }

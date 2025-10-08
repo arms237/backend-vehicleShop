@@ -1,9 +1,12 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-
 
 @Injectable()
 export class VehicleService {
@@ -26,47 +29,46 @@ export class VehicleService {
               firstName: true,
               lastName: true,
               email: true,
-            }
+            },
           },
           category: {
             include: {
               translations: {
                 where: { languageId: lang },
-              }
-            }
+              },
+            },
           },
           brand: {
             include: {
               translations: {
                 where: { languageId: lang },
-              }
-            }
+              },
+            },
           },
           supplier: {
             include: {
               translations: {
                 where: { languageId: lang },
-              }
-            }
+              },
+            },
           },
         },
         orderBy: {
           createdAt: 'desc',
-        }
+        },
+        
       });
 
       return {
-        message: await this.i18n.t('VEHICLE.LIST_SUCCESS', { lang }),
+        message: this.i18n.t('VEHICLE.LIST_SUCCESS', { lang }),
         vehicles,
-        count: vehicles.length
       };
     } catch (error) {
       throw new InternalServerErrorException(
-         this.i18n.t('VEHICLE.LIST_FAILED', { lang })
+        this.i18n.t('VEHICLE.LIST_FAILED', { lang }),
       );
     }
   }
-
 
   async getVehicleById(id: string, lang: string = 'fr') {
     try {
@@ -83,51 +85,46 @@ export class VehicleService {
               firstName: true,
               lastName: true,
               email: true,
-            }
+            },
           },
           category: {
             include: {
               translations: {
                 where: { languageId: lang },
-              }
-            }
+              },
+            },
           },
           brand: {
             include: {
               translations: {
                 where: { languageId: lang },
-              }
-            }
+              },
+            },
           },
           supplier: {
             include: {
               translations: {
                 where: { languageId: lang },
-              }
-            }
+              },
+            },
           },
-        }
+        },
       });
 
       if (!vehicle) {
-        throw new NotFoundException(
-           this.i18n.t('VEHICLE.NOT_FOUND', { lang })
-        );
+        throw new NotFoundException(this.i18n.t('VEHICLE.NOT_FOUND', { lang }));
       }
 
-      return {
-        message:  this.i18n.t('VEHICLE.DETAIL_SUCCESS', { lang }),
-        vehicle
-      };
+      return vehicle;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
       throw new InternalServerErrorException(
-         this.i18n.t('VEHICLE.DETAIL_FAILED', { lang })
+        this.i18n.t('VEHICLE.DETAIL_FAILED', { lang }),
       );
     }
-  }  
+  }
 
   async createVehicle(
     createVehicleDto: CreateVehicleDto,
@@ -166,22 +163,23 @@ export class VehicleService {
       images,
       translations,
     } = createVehicleDto;
-    
+
     try {
       const adminExists = await this.prisma.user.findUnique({
         where: { id: adminId },
-        select:{id: true, role: {select: {name: true}}}
-      })
+        select: { id: true, role: { select: { name: true } } },
+      });
 
-      if(!adminExists){
-        throw new NotFoundException(this.i18n.translate('common.USER_NOT_FOUND', {
-          lang: i18nContext.lang,
-        }))
+      if (!adminExists) {
+        throw new NotFoundException(
+          this.i18n.translate('common.USER_NOT_FOUND', {
+            lang: i18nContext.lang,
+          }),
+        );
       }
 
       const vehicle = await this.prisma.vehicle.create({
         data: {
-          //reference,
           model,
           bodyType,
           range,
@@ -190,7 +188,9 @@ export class VehicleService {
           stock,
           price,
           rentalPricePerDay,
-          firstRegistration,
+          firstRegistration: firstRegistration
+            ? new Date(firstRegistration)
+            : null,
           countryOrigin,
           axleCount,
           axleBrand,
@@ -209,15 +209,17 @@ export class VehicleService {
           admin: { connect: { id: adminId } },
           category: { connect: { id: categoryId } },
           brand: { connect: { id: brandId } },
-          supplier: { connect: { id: supplierId } },
+          supplier: supplierId ? { connect: { id: supplierId } } : undefined,
           images: images ? { create: images } : undefined,
-          translations: translations ? { 
-            create: translations.map(t => ({
-              languageId: t.languageId,
-              title: t.title,
-              description: t.description,
-            }))
-          } : undefined,
+          translations: translations
+            ? {
+                create: translations.map((t) => ({
+                  languageId: t.languageId,
+                  title: t.title,
+                  description: t.description,
+                })),
+              }
+            : undefined,
         },
         include: {
           images: true,
@@ -228,24 +230,24 @@ export class VehicleService {
               firstName: true,
               lastName: true,
               email: true,
-            }
+            },
           },
           category: {
             include: {
               translations: true,
-            }
+            },
           },
           brand: {
             include: {
               translations: true,
-            }
+            },
           },
           supplier: {
             include: {
               translations: true,
-            }
+            },
           },
-        }
+        },
       });
 
       return {
@@ -255,7 +257,7 @@ export class VehicleService {
         vehicle,
       };
     } catch (error) {
-     throw error;
+      throw error;
     }
   }
 
@@ -268,12 +270,14 @@ export class VehicleService {
       // Vérification de l'existence du véhicule
       const existingVehicle = await this.prisma.vehicle.findUnique({
         where: { id },
-        select: { id: true }
+        select: { id: true },
       });
 
       if (!existingVehicle) {
         throw new NotFoundException(
-          this.i18n.translate('common.VEHICLE.NOT_FOUND', { lang: i18nContext.lang })
+          this.i18n.translate('common.VEHICLE.NOT_FOUND', {
+            lang: i18nContext.lang,
+          }),
         );
       }
 
@@ -292,12 +296,14 @@ export class VehicleService {
       if (adminId) {
         const adminExists = await this.prisma.user.findUnique({
           where: { id: adminId },
-          select: { id: true }
+          select: { id: true },
         });
 
         if (!adminExists) {
           throw new NotFoundException(
-            this.i18n.translate('common.USER_NOT_FOUND', { lang: i18nContext.lang })
+            this.i18n.translate('common.USER_NOT_FOUND', {
+              lang: i18nContext.lang,
+            }),
           );
         }
       }
@@ -305,12 +311,14 @@ export class VehicleService {
       if (categoryId) {
         const categoryExists = await this.prisma.category.findUnique({
           where: { id: categoryId },
-          select: { id: true }
+          select: { id: true },
         });
 
         if (!categoryExists) {
           throw new NotFoundException(
-            this.i18n.translate('CATEGORY.NOT_FOUND', { lang: i18nContext.lang })
+            this.i18n.translate('common.CATEGORY.NOT_FOUND', {
+              lang: i18nContext.lang,
+            }),
           );
         }
       }
@@ -318,12 +326,14 @@ export class VehicleService {
       if (brandId) {
         const brandExists = await this.prisma.brand.findUnique({
           where: { id: brandId },
-          select: { id: true }
+          select: { id: true },
         });
 
         if (!brandExists) {
           throw new NotFoundException(
-             this.i18n.translate('BRAND.NOT_FOUND', { lang: i18nContext.lang })
+            this.i18n.translate('common.BRAND.NOT_FOUND', {
+              lang: i18nContext.lang,
+            }),
           );
         }
       }
@@ -331,12 +341,12 @@ export class VehicleService {
       if (supplierId) {
         const supplierExists = await this.prisma.supplier.findUnique({
           where: { id: supplierId },
-          select: { id: true }
+          select: { id: true },
         });
 
         if (!supplierExists) {
           throw new NotFoundException(
-            `Supplier with ID ${supplierId} not found`
+            `Supplier with ID ${supplierId} not found`,
           );
         }
       }
@@ -346,24 +356,30 @@ export class VehicleService {
         where: { id },
         data: {
           ...vehicleData,
-          firstRegistration: firstRegistration ? new Date(firstRegistration) : undefined,
+          firstRegistration: firstRegistration
+            ? new Date(firstRegistration)
+            : undefined,
           admin: adminId ? { connect: { id: adminId } } : undefined,
           category: categoryId ? { connect: { id: categoryId } } : undefined,
           brand: brandId ? { connect: { id: brandId } } : undefined,
           supplier: supplierId ? { connect: { id: supplierId } } : undefined,
           // Gestion des images et traductions lors de la mise à jour
-          images: images ? {
-            deleteMany: {},
-            create: images
-          } : undefined,
-          translations: translations ? {
-            deleteMany: {},
-            create: translations.map(t => ({
-              languageId: t.languageId,
-              title: t.title,
-              description: t.description,
-            }))
-          } : undefined,
+          images: images
+            ? {
+                deleteMany: {},
+                create: images,
+              }
+            : undefined,
+          translations: translations
+            ? {
+                deleteMany: {},
+                create: translations.map((t) => ({
+                  languageId: t.languageId,
+                  title: t.title,
+                  description: t.description,
+                })),
+              }
+            : undefined,
         },
         include: {
           images: true,
@@ -374,28 +390,28 @@ export class VehicleService {
               firstName: true,
               lastName: true,
               email: true,
-            }
+            },
           },
           category: {
             include: {
               translations: true,
-            }
+            },
           },
           brand: {
             include: {
               translations: true,
-            }
+            },
           },
           supplier: {
             include: {
               translations: true,
-            }
+            },
           },
-        }
+        },
       });
 
       return {
-        message:  this.i18n.translate('common.VEHICLE.UPDATE_SUCCESS', {
+        message: this.i18n.translate('common.VEHICLE.UPDATE_SUCCESS', {
           lang: i18nContext.lang,
         }),
         vehicle,
@@ -404,38 +420,39 @@ export class VehicleService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      
+
       console.error('Erreur lors de la mise à jour du véhicule:', error);
       throw new InternalServerErrorException(
-         this.i18n.translate('common.VEHICLE.UPDATE_FAILED', {
+        this.i18n.translate('common.VEHICLE.UPDATE_FAILED', {
           lang: i18nContext.lang,
-        })
+        }),
       );
     }
   }
-
 
   async deleteVehicle(id: string, i18nContext: I18nContext) {
     try {
       // Vérification de l'existence du véhicule
       const existingVehicle = await this.prisma.vehicle.findUnique({
         where: { id },
-        select: { id: true }
+        select: { id: true },
       });
 
       if (!existingVehicle) {
         throw new NotFoundException(
-           this.i18n.translate('common.VEHICLE.NOT_FOUND', { lang: i18nContext.lang })
+          this.i18n.translate('common.VEHICLE.NOT_FOUND', {
+            lang: i18nContext.lang,
+          }),
         );
       }
 
       // Suppression du véhicule (les relations en cascade seront automatiquement supprimées)
       await this.prisma.vehicle.delete({
-        where: { id }
+        where: { id },
       });
 
       return {
-        message:  this.i18n.translate('common.VEHICLE.DELETE_SUCCESS', {
+        message: this.i18n.translate('common.VEHICLE.DELETE_SUCCESS', {
           lang: i18nContext.lang,
         }),
       };
@@ -443,12 +460,59 @@ export class VehicleService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      
+
       console.error('Erreur lors de la suppression du véhicule:', error);
       throw new InternalServerErrorException(
-         this.i18n.translate('common.VEHICLE.DELETE_FAILED', {
+        this.i18n.translate('common.VEHICLE.DELETE_FAILED', {
           lang: i18nContext.lang,
-        })
+        }),
+      );
+    }
+  }
+
+  async getVehiclesByCategory(categoryId: string, i18nContext: I18nContext) {
+    if (!categoryId) {
+      throw new NotFoundException(
+        this.i18n.translate('common.CATEGORY.ID_REQUIRED', {
+          lang: i18nContext.lang,
+        }),
+      );
+    }
+
+    const existingCategory = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+      select: { id: true },
+    });
+
+    if (!existingCategory) {
+      throw new NotFoundException(
+        this.i18n.translate('common.CATEGORY.NOT_FOUND', {
+          lang: i18nContext.lang,
+        }),
+      );
+    }
+
+    try {
+      const vehicles = await this.prisma.vehicle.findMany({
+        where: { categoryId: categoryId },
+        include: {images: true, translations: true, category: {include: {translations: true}}},
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return vehicles;
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        throw err;
+      }
+
+      console.error(
+        'Erreur lors du chargement des vehicules par categorie: ',
+        err,
+      );
+      throw new InternalServerErrorException(
+        this.i18n.translate('common.CATEGORY.LOAD_VEHICLES_ERROR', {
+          lang: i18nContext.lang || 'fr',
+        }),
       );
     }
   }

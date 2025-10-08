@@ -27,7 +27,7 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehicleStatus } from '@prisma/client';
 
-@ApiTags('Vehicles')
+@ApiTags('Véhicules')
 @Controller('vehicle')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
@@ -188,5 +188,14 @@ export class VehicleController {
     @I18n() i18n: I18nContext,
   ) {
     return this.vehicleService.deleteVehicle(id, i18n);
+  }
+
+  @Get('category/:id')
+  @ApiOperation({
+    summary: 'Afficher les vehicules par categorie',
+    description: "Récupère tous les véhicules d'une catégorie spécifique"
+  })
+  async getVehicleByCategory (@Param('id', ParseUUIDPipe) id: string, @I18n() i18n: I18nContext){
+    return this.vehicleService.getVehiclesByCategory(id,i18n)
   }
 }

@@ -70,14 +70,14 @@ export class VehicleService {
     }
   }
 
-  async getVehicleById(id: string, lang: string = 'fr') {
+  async getVehicleById(id: string, i18nContext: I18nContext) {
     try {
       const vehicle = await this.prisma.vehicle.findUnique({
         where: { id },
         include: {
           images: true,
           translations: {
-            where: { languageId: lang },
+            where: { languageId: i18nContext.lang },
           },
           admin: {
             select: {
@@ -90,21 +90,21 @@ export class VehicleService {
           category: {
             include: {
               translations: {
-                where: { languageId: lang },
+                where: { languageId: i18nContext.lang },
               },
             },
           },
           brand: {
             include: {
               translations: {
-                where: { languageId: lang },
+                where: { languageId: i18nContext.lang },
               },
             },
           },
           supplier: {
             include: {
               translations: {
-                where: { languageId: lang },
+                where: { languageId: i18nContext.lang },
               },
             },
           },
@@ -112,7 +112,7 @@ export class VehicleService {
       });
 
       if (!vehicle) {
-        throw new NotFoundException(this.i18n.t('VEHICLE.NOT_FOUND', { lang }));
+        throw new NotFoundException(this.i18n.t('VEHICLE.NOT_FOUND', {  lang: i18nContext.lang }));
       }
 
       return vehicle;
@@ -121,7 +121,7 @@ export class VehicleService {
         throw error;
       }
       throw new InternalServerErrorException(
-        this.i18n.t('VEHICLE.DETAIL_FAILED', { lang }),
+        this.i18n.t('VEHICLE.DETAIL_FAILED', { lang: i18nContext.lang }),
       );
     }
   }

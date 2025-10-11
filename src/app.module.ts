@@ -12,6 +12,9 @@ import { EmailModule } from './email/email.module';
 import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
 import { VehicleModule } from './vehicle/vehicle.module';
+import { TransactionModule } from './transaction/transaction.module';
+import { TransactionController } from './transaction/transaction.controller';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -35,10 +38,13 @@ import { VehicleModule } from './vehicle/vehicle.module';
     CategoryModule,
     BrandModule,
     VehicleModule,
+    TransactionModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
+
 export class AppModule implements OnModuleInit {
   constructor(private readonly i18n: I18nService) {}
 

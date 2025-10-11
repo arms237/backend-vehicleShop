@@ -26,7 +26,7 @@ model Language {
 // === ROLES ===
 model Role {
   id    Int      @id @default(autoincrement())
-  name  RoleName @default(client)// client,admin, seller
+  name  RoleName @default(client) @unique// client,admin, seller
   users User[]
 }
 
@@ -225,7 +225,7 @@ model VehicleImage {
 // === TRANSACTIONS ===
 model Transaction {
   id           String    @id @default(uuid())
-  type         String // 'sale' or 'rental'
+  type         TransactionType // 'sale' or 'rental'
   createdAt    DateTime  @default(now())
   startDate    DateTime?
   endDate      DateTime?
@@ -248,7 +248,10 @@ enum StatusTransaction {
   completed
   cancelled 
 }
-
+enum TransactionType {
+  sale
+  rental
+}
 // === VEHICLE TRANSACTIONS ===
 model VehicleTransaction {
   id       String   @id @default(uuid())

@@ -97,9 +97,9 @@ export class VehicleController {
   @ApiResponse({ status: 500, description: 'Erreur interne du serveur' })
   async getVehicleById(
     @Param('id', ParseUUIDPipe) id: string,
-    @Query('lang') lang: string = 'fr'
+    @I18n() i18n: I18nContext,
   ) {
-    return this.vehicleService.getVehicleById(id, lang);
+    return this.vehicleService.getVehicleById(id, i18n);
   }
 
 

@@ -15,6 +15,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { TransactionController } from './transaction/transaction.controller';
 import { UserModule } from './user/user.module';
+import { SupplierModule } from './supplier/supplier.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UserModule } from './user/user.module';
     VehicleModule,
     TransactionModule,
     UserModule,
+    SupplierModule,
   ],
   controllers: [AppController],
   providers: [AppService],

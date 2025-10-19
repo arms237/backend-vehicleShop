@@ -45,13 +45,7 @@ export class VehicleService {
               },
             },
           },
-          supplier: {
-            include: {
-              translations: {
-                where: { languageId: lang },
-              },
-            },
-          },
+          supplier:true
         },
         orderBy: {
           createdAt: 'desc',
@@ -101,13 +95,7 @@ export class VehicleService {
               },
             },
           },
-          supplier: {
-            include: {
-              translations: {
-                where: { languageId: i18nContext.lang },
-              },
-            },
-          },
+          supplier: true,
         },
       });
 
@@ -242,11 +230,7 @@ export class VehicleService {
               translations: true,
             },
           },
-          supplier: {
-            include: {
-              translations: true,
-            },
-          },
+          supplier: true,
         },
       });
 
@@ -402,11 +386,7 @@ export class VehicleService {
               translations: true,
             },
           },
-          supplier: {
-            include: {
-              translations: true,
-            },
-          },
+          supplier: true,
         },
       });
 

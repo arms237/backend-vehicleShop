@@ -8,7 +8,8 @@ import {
   Param, 
   Query,
   UseGuards,
-  Request
+  Request,
+  Patch
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -30,12 +31,12 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
-  @Put(':id/role')
+  @Patch(':id/role')
   async updateUserRole(@Param('id') id: string, @Body('role') role: RoleName, @I18n() i18n: I18nContext) {
     return this.userService.updateUserRole(id, role,i18n);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
     async deleteUser(@Param('id') id: string, @I18n() i18n: I18nContext) {
         return this.userService.deleteUser(id,i18n);
     }

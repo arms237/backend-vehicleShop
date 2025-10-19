@@ -7,9 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // 
+  provider = "postgresql" // 
   url      = env("DATABASE_URL")
- // directUrl = env("DIRECT_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // === LANGUES SUPPORTÉES ===
@@ -19,7 +19,6 @@ model Language {
 
   categoryTranslations Category_Translation[]
   brandTranslations    Brand_Translation[]
-  supplierTranslations Supplier_Translation[]
   vehicleTranslations  Vehicle_Translation[]
 }
 
@@ -58,7 +57,6 @@ model User {
   role         Role          @relation(fields: [roleId], references: [id])
   vehicles     Vehicle[]     @relation("AdminVehicles")
   transactions Transaction[]
-  favorites    Favorite[]
 
   @@index([email])
 }
@@ -111,29 +109,16 @@ model Brand_Translation {
 
 // === SUPPLIERS ===
 model Supplier {
-  id   String @id @default(uuid())
-  slug String @unique
-
+  id      String @id @default(uuid())
+  name String @unique
   address String?
   phone   String?
   email   String?
-
+  createdAt DateTime @default(now())
   vehicles     Vehicle[]
-  translations Supplier_Translation[]
 }
 
-model Supplier_Translation {
-  id   String @id @default(uuid())
-  name String
 
-  supplierId String
-  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-
-  languageId String
-  language   Language @relation(fields: [languageId], references: [id])
-
-  @@unique([supplierId, languageId])
-}
 
 // === VEHICLES ===
 model Vehicle {
@@ -179,7 +164,6 @@ model Vehicle {
 
   images              VehicleImage[]
   vehicleTransactions VehicleTransaction[]
-  favorites           Favorite[]
   translations        Vehicle_Translation[]
 
   @@index([status])
@@ -267,16 +251,4 @@ model VehicleTransaction {
   @@unique([vehicleId, transactionId])
 }
 
-// === FAVORITES ===
-model Favorite {
-  id      String   @id @default(uuid())
-  addedAt DateTime @default(now())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, vehicleId])
-}

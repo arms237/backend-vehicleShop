@@ -314,7 +314,7 @@ export class EmailService {
       return false;
     }
   }
-
+//--------------------------------------------------------------
   async sendResetPasswordEmail(email: string, token: string, language: string) {
     if (!this.checkEmailService()) {
       console.log(`📧 Email de reset non envoyé à ${email} (service désactivé)`);

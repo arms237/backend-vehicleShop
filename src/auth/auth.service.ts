@@ -38,11 +38,15 @@ export class AuthService {
         // Resend verification email
         await this.prisma.user.update(
           { where: { email }, data: { verificationToken } })
-        await this.emailService.sendVerificationEmail(
+        // Tentative d'envoi email (non bloquante)
+        const emailSent = await this.emailService.sendVerificationEmail(
           existingUser.email,
           verificationToken,
           lang,
         );
+        if (!emailSent) {
+          console.warn(`⚠️  Email de vérification non envoyé pour ${existingUser.email}`);
+        }
         throw new BadRequestException(
           this.i18n.translate('common.EMAIL_NOT_VERIFIED_RESEND', { lang }),
         );
@@ -92,12 +96,16 @@ export class AuthService {
       include: { role: true },
     });
 
-    //Envoyer l'email de vérification
-    await this.emailService.sendVerificationEmail(
+    //Envoyer l'email de vérification (non bloquant)
+    const emailSent = await this.emailService.sendVerificationEmail(
       user.email,
       verificationToken,
       lang,
     );
+    
+    if (!emailSent) {
+      console.warn(`⚠️  Email de vérification non envoyé pour ${user.email}`);
+    }
 
     //Traduire le role
 

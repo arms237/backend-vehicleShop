@@ -26,45 +26,69 @@ export class AuthService {
   async signup(signupDto: SignupDto) {
     const { email, firstName, lastName, phone, password, preferredLanguage } =
       signupDto;
-    const lang = preferredLanguage || 'it';
+    const lang = preferredLanguage || 'fr';
      //Générer les token
     const verificationToken = uuidv4();
+    const verificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 heures
+    
     //Vérifier si l'email existe
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
+    
     if (existingUser) {
-      if(!existingUser.isVerified){
-        // Resend verification email
-        await this.prisma.user.update(
-          { where: { email }, data: { verificationToken } })
+      if (!existingUser.isVerified) {
+        // Utilisateur existe mais non vérifié - renvoyer un nouveau token
+        await this.prisma.user.update({
+          where: { email }, 
+          data: { 
+            verificationToken,
+            verificationExpiresAt 
+          }
+        });
+        
         // Tentative d'envoi email (non bloquante)
         const emailSent = await this.emailService.sendVerificationEmail(
           existingUser.email,
           verificationToken,
           lang,
         );
+        
         if (!emailSent) {
           console.warn(`⚠️  Email de vérification non envoyé pour ${existingUser.email}`);
         }
-        throw new BadRequestException(
-          this.i18n.translate('common.EMAIL_NOT_VERIFIED_RESEND', { lang }),
-        );
+        
+        // Retourner un succès au lieu d'une erreur
+        return {
+          message: this.i18n.translate('common.VERIFICATION_EMAIL_RESENT', { lang }),
+          user: {
+            id: existingUser.id,
+            email: existingUser.email,
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+            role: 'client',
+            preferredLanguage: existingUser.preferredLanguage,
+          },
+          isResend: true
+        };
       }
-      console.log(preferredLanguage)
+      
+      // Utilisateur déjà vérifié
       throw new BadRequestException(
-        this.i18n.translate('common.EMAIL_ALREADY_USED', { lang: 'it' }),
+        this.i18n.translate('common.EMAIL_ALREADY_USED', { lang }),
       );
     }
     
     //Vérifier le numero de téléphone
-    const existingPhone = await this.prisma.user.findUnique({
-      where: { phone },
-    });
-    if (existingPhone) {
-      throw new BadRequestException(
-        this.i18n.translate('common.PHONE_ALREADY_USED', { lang }),
-      );
+    if (phone) {
+      const existingPhone = await this.prisma.user.findUnique({
+        where: { phone },
+      });
+      if (existingPhone) {
+        throw new BadRequestException(
+          this.i18n.translate('common.PHONE_ALREADY_USED', { lang }),
+        );
+      }
     }
    
     //Hasher le mot de passe
@@ -81,6 +105,7 @@ export class AuthService {
         },
       });
     }
+    
     //Créer l'utilisateur
     const user = await this.prisma.user.create({
       data: {
@@ -89,9 +114,10 @@ export class AuthService {
         phone,
         email,
         password: hashedPassword,
-        roleId: clientRole?.id || 1, // Par défaut client
+        roleId: clientRole?.id || 1,
         preferredLanguage: lang,
         verificationToken,
+        verificationExpiresAt,
       },
       include: { role: true },
     });
@@ -108,7 +134,6 @@ export class AuthService {
     }
 
     //Traduire le role
-
     const roleName = this.i18n.translate(
       `common.ROLE_${user.role.name.toUpperCase()}`,
       { lang },
@@ -124,17 +149,36 @@ export class AuthService {
         role: roleName,
         preferredLanguage: user.preferredLanguage,
       },
+      isResend: false
     };
   }
 
   //Vérification de l'email
   async verifyEmail(token: string, i18nContext: I18nContext) {
-    const lang = i18nContext.lang || 'it';
+    const lang = i18nContext.lang || 'fr';
     const user = await this.prisma.user.findFirst({
-      where: { verificationToken: token },
+      where: { 
+        verificationToken: token,
+        // Vérifier que le token n'a pas expiré
+        verificationExpiresAt: {
+          gte: new Date()
+        }
+      },
       include: { role: true },
     });
+    
     if (!user) {
+      // Vérifier si le token existe mais a expiré
+      const expiredUser = await this.prisma.user.findFirst({
+        where: { verificationToken: token },
+      });
+      
+      if (expiredUser) {
+        throw new BadRequestException(
+          this.i18n.translate('common.TOKEN_EXPIRED', { lang }),
+        );
+      }
+      
       throw new BadRequestException(
         this.i18n.translate('common.INVALID_TOKEN', { lang }),
       );
@@ -142,7 +186,11 @@ export class AuthService {
 
     const updatedUser = await this.prisma.user.update({
       where: { id: user.id },
-      data: { isVerified: true, verificationToken: null },
+      data: { 
+        isVerified: true, 
+        verificationToken: null,
+        verificationExpiresAt: null 
+      },
       include: { role: true },
     });
 
@@ -276,12 +324,31 @@ export class AuthService {
     const {token,password} = resetPswDto;
     // Vérifier le token
     const user = await this.prisma.user.findFirst({
-      where: { resetPasswordToken: token },
+      where: { 
+        resetPasswordToken: token,
+        // Vérifier que le token n'a pas expiré
+        resetPasswordExpiresAt: {
+          gte: new Date()
+        }
+      },
       include: { role: true },
     });
 
-   if (!user || (user.resetPasswordExpiresAt && user.resetPasswordExpiresAt < new Date())) {
-      throw new BadRequestException(this.i18n.translate('common.INVALID_TOKEN', { lang:i18nContext.lang || 'fr' }));
+    if (!user) {
+      // Vérifier si le token existe mais a expiré
+      const expiredUser = await this.prisma.user.findFirst({
+        where: { resetPasswordToken: token },
+      });
+      
+      if (expiredUser) {
+        throw new BadRequestException(
+          this.i18n.translate('common.TOKEN_EXPIRED', { lang: i18nContext.lang || 'fr' })
+        );
+      }
+      
+      throw new BadRequestException(
+        this.i18n.translate('common.INVALID_TOKEN', { lang: i18nContext.lang || 'fr' })
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
